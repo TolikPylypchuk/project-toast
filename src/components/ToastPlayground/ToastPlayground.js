@@ -1,7 +1,7 @@
 import React from "react";
 
 import Button from "../Button";
-import Toast from "../Toast";
+import ToastShelf from "../ToastShelf";
 
 import styles from "./ToastPlayground.module.css";
 
@@ -9,8 +9,27 @@ const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
 function ToastPlayground() {
   const [message, setMessage] = React.useState("");
-  const [selectedVariant, setSelectedVariant] = React.useState("notice");
-  const [showToast, setShowToast] = React.useState(false);
+  const [selectedVariant, setSelectedVariant] = React.useState(
+    VARIANT_OPTIONS[0]
+  );
+  const [toasts, setToasts] = React.useState([]);
+
+  function onSubmit(event) {
+    event.preventDefault();
+
+    const nextToasts = [
+      ...toasts,
+      { id: Math.random(), message, variant: selectedVariant },
+    ];
+
+    setToasts(nextToasts);
+    setMessage("");
+    setSelectedVariant(VARIANT_OPTIONS[0]);
+  }
+
+  function onDismiss(id) {
+    setToasts(toasts.filter((toast) => toast.id !== id));
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -18,12 +37,10 @@ function ToastPlayground() {
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
-      {showToast && (
-        <Toast variant={selectedVariant} onDismiss={() => setShowToast(false)}>
-          {message}
-        </Toast>
-      )}
-      <div className={styles.controlsWrapper}>
+
+      <ToastShelf items={toasts} onDismiss={onDismiss} />
+
+      <form onSubmit={onSubmit} className={styles.controlsWrapper}>
         <div className={styles.row}>
           <label
             htmlFor="message"
@@ -67,10 +84,10 @@ function ToastPlayground() {
         <div className={styles.row}>
           <div className={styles.label} />
           <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            <Button onClick={() => setShowToast(true)}>Pop Toast!</Button>
+            <Button type="submit">Pop Toast!</Button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
