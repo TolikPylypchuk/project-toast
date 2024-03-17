@@ -30,10 +30,15 @@ function Toast({
       <div className={styles.iconContainer}>
         <Icon size={24} />
       </div>
+      <VisuallyHidden>{variant} -</VisuallyHidden>
       <p className={styles.content}>{children}</p>
-      <button onClick={onDismiss} className={styles.closeButton}>
+      <button
+        onClick={onDismiss}
+        className={styles.closeButton}
+        aria-label={dismissMessage}
+        aria-live="off"
+      >
         <X size={24} />
-        <VisuallyHidden>{dismissMessage}</VisuallyHidden>
       </button>
     </div>
   );
